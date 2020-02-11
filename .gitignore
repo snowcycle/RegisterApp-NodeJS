@@ -9,6 +9,9 @@ logs
 node_modules
 yarn.lock
 
+# Environment variables file
+.env
+
 # Other
 *.tap
 coverage
