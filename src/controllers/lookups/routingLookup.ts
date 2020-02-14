@@ -1,9 +1,9 @@
 export enum ParameterLookup {
-	ProductId = "productId"
+	ProductId = 'productId'
 }
 
 export enum QueryParameterLookup {
-	ErrorCode = "errorCode"
+	ErrorCode = 'errorCode'
 }
 
 export enum ViewNameLookup {
@@ -22,11 +22,11 @@ export enum RouteLookup {
 	ProductListing = "/productListing",
 
 	// Page routing - parameters
-	ProductIdParameter = "/:productId",
+	ProductIdParameter = '/:productId',
 	// End page routing - parameters
 	// End page routing
 
 	// API routing
-	API = "/api",
+	API = '/api',
 	// End API routing
 }

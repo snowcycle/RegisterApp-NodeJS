@@ -1,10 +1,10 @@
 {
-    "_DATABASE-start.comment"                         : "Start _database_",
+	"_DATABASE-start.comment"                         : "Start _database_",
 	"_DATABASE-product-start.comment"                 : "Start _database - product_",
-    "0010001" : "Product was not found.",
-    "0010002" : "Unable to save product.",
-    "0010003" : "Unable to delete product.",
-    "0010004" : "Unable to retrieve product listing.",
+	"0010001" : "Product was not found.",
+	"0010002" : "Unable to save product.",
+	"0010003" : "Unable to delete product.",
+	"0010004" : "Unable to retrieve product listing.",
 	"_DATABASE-product-end.comment"                   : "End _database - product_",
 
 	"_DATABASE-employee-start.comment"                : "Start _database - employee_",
@@ -46,8 +46,8 @@
     "_GENERAL-employee-end.comment"                   : "End _general - employee_",
     "_GENERAL-end.comment"                            : "End _general_",
 
-    "_CONSTANTS-start.comment"                        : "Start _constants_",
-    "0202001" : "00000000-0000-0000-0000-000000000000",
-    "_0202001.comment" : "Empty UUID.",
-    "_CONSTANTS-end.comment"                          : "End _constants_"
+	"_CONSTANTS-start.comment"                        : "Start _constants_",
+	"0202001" : "00000000-0000-0000-0000-000000000000",
+	"_0202001.comment" : "Empty UUID.",
+	"_CONSTANTS-end.comment"                          : "End _constants_"
 }

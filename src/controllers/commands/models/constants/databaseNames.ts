@@ -3,13 +3,12 @@ export enum DatabaseTableName {
 	EMPLOYEE = "employee",
 	ACTIVE_USER = "activeuser"
 }
-/***************************************/
 
 export enum ProductFieldName {
-	ID = "id",
-	COUNT = "count",
-	CREATED_ON = "createdon",
-	LOOKUP_CODE = "lookupcode"
+	ID = 'id',
+	COUNT = 'count',
+	CREATED_ON = 'createdon',
+	LOOKUP_CODE = 'lookupcode'
 }
 
 export enum EmployeeFieldName {
