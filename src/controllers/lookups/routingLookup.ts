@@ -7,19 +7,19 @@ export enum QueryParameterLookup {
 }
 
 export enum ViewNameLookup {
-	SignIn = "signIn",
-	MainMenu = "mainMenu",
-	ProductDetail = "productDetail",
-	ProductListing = "productListing"
+	SignIn = 'signIn',
+	MainMenu = 'mainMenu',
+	ProductDetail = 'productDetail',
+	ProductListing = 'productListing'
 }
 
 export enum RouteLookup {
 	// Page routing
-	SignIn = "/",
-	SignOut = "/signOut",
-	MainMenu = "/mainMenu",
-	ProductDetail = "/productDetail",
-	ProductListing = "/productListing",
+	SignIn = '/',
+	SignOut = '/signOut',
+	MainMenu = '/mainMenu',
+	ProductDetail = '/productDetail',
+	ProductListing = '/productListing',
 
 	// Page routing - parameters
 	ProductIdParameter = '/:productId',

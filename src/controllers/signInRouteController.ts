@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
 export const signIn = async (req: Request, res: Response): Promise<void> => {
 	// TODO: Use the credentials provided in the request body (req.body)
