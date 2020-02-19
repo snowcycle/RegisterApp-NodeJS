@@ -5,6 +5,15 @@ import { ViewNameLookup, QueryParameterLookup } from './lookups/routingLookup';
 import * as ValidateActiveUser from './commands/activeUsers/validateActiveUserCommand';
 import { PageResponse, CommandResponse, ActiveUser, MainMenuPageResponse } from './typeDefinitions';
 
+export const getView = async (req: Request, res: Response): Promise<void> => {
+	try {
+		return res.render(ViewNameLookup.MainMenu);
+	} catch (error) {
+		console.error(error);
+		res.sendStatus(500);
+	}
+};
+
 export const start = async (req: Request, res: Response): Promise<void> => {
 	if (Helper.handleInvalidSession(req, res))
 		return;
