@@ -34,13 +34,11 @@ export const processStartError = (
 ): boolean => {
 	let processedStartError = false;
 
-	if ((error.status != null) && (error.status === 404)
-		&& (error.message === Resources.getString(ResourceKey.USER_NOT_FOUND))) {
+	if (error.status != null && error.status === 404 && error.message === Resources.getString(ResourceKey.USER_NOT_FOUND)) {
 
 		res.redirect(invalidSessionRedirectUrl);
 		processedStartError = true;
-	} else if ((error.status != null) && (error.status === 403)
-		&& (error.message === Resources.getString(ResourceKey.USER_NO_PERMISSIONS))) {
+	} else if (error.status != null && error.status === 403 && error.message === Resources.getString(ResourceKey.USER_NO_PERMISSIONS)) {
 
 		res.redirect(buildNoPermissionsRedirectUrl(redirectBaseLocation));
 		processedStartError = true;
@@ -75,7 +73,7 @@ export const processApiError = (
 			.send(<ApiResponse>{
 				redirectUrl: invalidSessionRedirectUrl,
 				errorMessage:
-					Resources.getString(ResourceKey.USER_SESSION_NOT_FOUND),
+					Resources.getString(ResourceKey.USER_SESSION_NOT_FOUND)
 			});
 	else if (error.status != null && error.status === 403 && error.message === Resources.getString(ResourceKey.USER_NO_PERMISSIONS))
 		res.status(error.status)
@@ -85,8 +83,8 @@ export const processApiError = (
 					errorHints.redirectBaseLocation)
 			});
 	else
-		res.status((error.status || 500))
+		res.status(error.status || 500)
 			.send(<ApiResponse>{
-				errorMessage: (error.message || errorHints.defaultErrorMessage)
+				errorMessage: error.message || errorHints.defaultErrorMessage
 			});
 };
