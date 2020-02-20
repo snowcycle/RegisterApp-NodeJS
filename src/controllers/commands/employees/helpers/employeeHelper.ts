@@ -1,4 +1,3 @@
-  
 import { EmployeeClassification } from "../../models/constants/entityTypes";
 
 export const hashString = (toHash: string): string => {
