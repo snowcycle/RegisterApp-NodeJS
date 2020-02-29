@@ -6,10 +6,11 @@ export interface ProductSaveRequest {
 }
 
 export interface EmployeeSaveRequest {
+	employeeId: number;
 	id?: string;
 	active: boolean;
 	lastName: string;
-	password: string;
+	password: Buffer;
 	firstName: string;
 	managerId?: string;
 	classification: number;
