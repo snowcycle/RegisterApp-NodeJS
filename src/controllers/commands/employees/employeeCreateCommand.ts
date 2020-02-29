@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
 import * as Helper from "../helpers/helper";
-import { EmployeeModel } from "../models/EmployeeModel";
+import { EmployeeModel } from "../models/employeeModel";
 import * as EmployeeRepository from "../models/employeeModel";
 import * as DatabaseConnection from "../models/databaseConnection";
 import { CommandResponse, Employee, EmployeeSaveRequest } from "../../typeDefinitions";
