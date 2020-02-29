@@ -10,7 +10,7 @@ export interface EmployeeSaveRequest {
 	id?: string;
 	active: boolean;
 	lastName: string;
-	password: Buffer;
+	password: string;
 	firstName: string;
 	managerId?: string;
 	classification: number;

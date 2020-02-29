@@ -4,6 +4,8 @@ import { EmployeeModel } from "../models/EmployeeModel";
 import * as EmployeeRepository from "../models/employeeModel";
 import * as DatabaseConnection from "../models/databaseConnection";
 import { CommandResponse, Employee, EmployeeSaveRequest } from "../../typeDefinitions";
+import { Resources, ResourceKey } from "../../../resourceLookup";
+import sequelize from "sequelize";
 
 // TODO: validate this request
 
@@ -21,13 +23,54 @@ export const execute = async (
 		classification: saveEmployeeRequest.classification
 	};
 
+	let createTransaction: Sequelize.Transaction;
 
 	return DatabaseConnection.createTransaction()
-		.then((createTransaction: Sequelize.Transaction): Promise<EmployeeModel | null> => {
-			createTransaction = createTransaction;
+		.then((createdTransaction: Sequelize.Transaction): Promise<EmployeeModel | null> => {
+			createTransaction = createdTransaction;
 
 			return EmployeeRepository.queryByEmployeeId(
-				saveEmployeeRequest.id,
-				createTransaction)
-		})
+				saveEmployeeRequest.employeeId,
+				createTransaction);
+		}).then((queriedEmployee: (EmployeeModel | null)): Promise<EmployeeModel> => {
+			if (queriedEmployee != null) {
+				return Promise.reject(<CommandResponse<Employee>>{
+					status: 409,
+					message: Resources.getString(ResourceKey.EMPLOYEE_NOT_FOUND)
+				});
+			}
+
+			return EmployeeModel.create(
+				employeeToCreate,
+				<Sequelize.CreateOptions>{
+					transaction: createTransaction
+				});
+		}).then((createdEmployee: EmployeeModel): CommandResponse<Employee> => {
+			createTransaction.commit();
+
+			return <CommandResponse<Employee>> {
+				status: 201,
+				data: <Employee>{
+					id: createdEmployee.id,
+					active: createdEmployee.active,
+					lastName: createdEmployee.lastName,
+					createdOn: createdEmployee.createdOn,
+					password: createdEmployee.password,
+					firstName: createdEmployee.firstName,
+					managerId: createdEmployee.managerId,
+					employeeId: createdEmployee.employeeId.toString(),
+					classification: createdEmployee.classification
+				}
+			};
+		}).catch((error: any): Promise<CommandResponse<Employee>> => {
+			if (createTransaction != null) {
+				createTransaction.rollback();
+			}
+
+			return Promise.reject(<CommandResponse<Employee>>{
+				status: (error.status || 500),
+				message: (error.message
+					|| Resources.getString(ResourceKey.EMPLOYEE_UNABLE_TO_SAVE))
+			});
+		});
 };
