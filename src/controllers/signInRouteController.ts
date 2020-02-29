@@ -25,3 +25,8 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 					isElevatedUser: true
     });
 };
+export const sigin = async (req: Request, res: Response): Promise<void> => {
+     Signin.execute
+     
+     res.redirect("/signin");
+};
