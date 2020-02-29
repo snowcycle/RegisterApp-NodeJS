@@ -1,3 +1,3 @@
-export class employeeQuery {
+export class EmployeeQuery {
     
 }
