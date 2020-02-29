@@ -5,7 +5,7 @@ import * as EmployeeRepository from "../models/employeeModel";
 import * as DatabaseConnection from "../models/databaseConnection";
 import { CommandResponse, Employee, EmployeeSaveRequest } from "../../typeDefinitions";
 import { Resources, ResourceKey } from "../../../resourceLookup";
-import sequelize from "sequelize";
+import { EmployeeClassification } from "../models/constants/entityTypes";
 
 const validateSaveRequest = (
 	saveEmployeeRequest: EmployeeSaveRequest
@@ -47,6 +47,10 @@ export const execute = async (
 		employeeId: saveEmployeeRequest.employeeId,
 		classification: saveEmployeeRequest.classification
 	};
+
+	if (saveEmployeeRequest.isInitialEmployee) {
+		employeeToCreate.classification = EmployeeClassification.GeneralManager;
+	}
 
 	let createTransaction: Sequelize.Transaction;
 
