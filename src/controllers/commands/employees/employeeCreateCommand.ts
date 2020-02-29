@@ -7,11 +7,36 @@ import { CommandResponse, Employee, EmployeeSaveRequest } from "../../typeDefini
 import { Resources, ResourceKey } from "../../../resourceLookup";
 import sequelize from "sequelize";
 
-// TODO: validate this request
+const validateSaveRequest = (
+	saveEmployeeRequest: EmployeeSaveRequest
+): CommandResponse<Employee> => {
+	let errorMessage: string = "";
+
+	if (Helper.isBlankString(saveEmployeeRequest.firstName)) {
+		errorMessage = Resources.getString(ResourceKey.EMPLOYEE_FIRST_NAME_INVALID);
+	} else if ((Helper.isBlankString(saveEmployeeRequest.lastName))) {
+		errorMessage = Resources.getString(ResourceKey.EMPLOYEE_LAST_NAME_INVALID);
+	} else if ((Helper.isBlankString(saveEmployeeRequest.password))) {
+		errorMessage = Resources.getString(ResourceKey.EMPLOYEE_PASSWORD_INVALID);
+	}
+
+	return ((errorMessage === "")
+		? <CommandResponse<Employee>>{ status: 200 }
+		: <CommandResponse<Employee>>{
+			status: 422,
+			message: errorMessage
+		});
+};
 
 export const execute = async (
 	saveEmployeeRequest: EmployeeSaveRequest
 ): Promise<CommandResponse<Employee>> => {
+
+	const validationResponse: CommandResponse<Employee> =
+		validateSaveRequest(saveEmployeeRequest);
+	if (validationResponse.status !== 200) {
+		return Promise.reject(validationResponse);
+	}
 
 	const employeeToCreate: EmployeeModel = <EmployeeModel>{
 		active: saveEmployeeRequest.active,
