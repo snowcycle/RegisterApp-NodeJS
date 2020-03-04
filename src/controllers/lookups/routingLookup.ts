@@ -16,7 +16,7 @@ export enum RouteLookup {
 	// Page routing
 	ProductListing = "/productListing",
 	ProductDetail = "/productDetail",
-	MainMenu = "/",
+	MainMenu = "/mainMenu",
 
 	// Page routing - parameters
 	ProductIdParameter = "/:productId",
