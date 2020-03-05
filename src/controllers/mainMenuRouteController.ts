@@ -17,11 +17,17 @@ const processStartMainMenuError = (error: any, res: Response): void => {
 };
 
 export const start = async (req: Request, res: Response) => {
-	res.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
+	const isAciveUser = true;
+	if (isAciveUser) {
+		res.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
 
-	return res.render(
-		ViewNameLookup.MainMenu,
-		<MainMenuPageResponse>{
-			isElevatedUser: true
-		});
+		return res.render(
+			ViewNameLookup.MainMenu,
+			<MainMenuPageResponse>{
+				isElevatedUser: true
+			}
+		);
+	} else {
+		res.redirect("/signIn");
+	}
 };
