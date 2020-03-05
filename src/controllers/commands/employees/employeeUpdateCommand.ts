@@ -7,7 +7,6 @@ import { CommandResponse, Employee, EmployeeSaveRequest } from "../../typeDefini
 import { Resources, ResourceKey } from "../../../resourceLookup";
 import * as EmployeeHelper from "./helpers/employeeHelper";
 
-
 const validateSaveRequest = (
     saveEmployeeRequest: EmployeeSaveRequest
 ): CommandResponse<Employee> => {
@@ -29,63 +28,62 @@ const validateSaveRequest = (
         });
 };
 
-
 export const execute = async (
-	saveEmployeeRequest: EmployeeSaveRequest
+    saveEmployeeRequest: EmployeeSaveRequest
 ): Promise<CommandResponse<Employee>> => {
 
-	const validationResponse: CommandResponse<Employee> =
-		validateSaveRequest(saveEmployeeRequest);
-	if (validationResponse.status !== 200) {
-		return Promise.reject(validationResponse);
-	}
+    const validationResponse: CommandResponse<Employee> =
+        validateSaveRequest(saveEmployeeRequest);
+    if (validationResponse.status !== 200) {
+        return Promise.reject(validationResponse);
+    }
 
     let updateTransaction: Sequelize.Transaction;
 
     return DatabaseConnection.createTransaction()
-    .then((createdTransaction: Sequelize.Transaction): Promise<EmployeeModel | null> => {
-        updateTransaction = createdTransaction;
+        .then((createdTransaction: Sequelize.Transaction): Promise<EmployeeModel | null> => {
+            updateTransaction = createdTransaction;
 
-        return EmployeeRepository.queryById(
-            <string>saveEmployeeRequest.id,
-            updateTransaction);
-    }).then((queriedEmployee: (EmployeeModel | null)): Promise<EmployeeModel> => {
-        if (queriedEmployee == null) {
+            return EmployeeRepository.queryById(
+                <string>saveEmployeeRequest.id,
+                updateTransaction);
+        }).then((queriedEmployee: (EmployeeModel | null)): Promise<EmployeeModel> => {
+            if (queriedEmployee == null) {
+                return Promise.reject(<CommandResponse<Employee>>{
+                    status: 404,
+                    message: Resources.getString(ResourceKey.EMPLOYEE_NOT_FOUND)
+                });
+            }
+
+            return queriedEmployee.update(
+                <Object>{
+                    active: saveEmployeeRequest.active,
+                    lastName: saveEmployeeRequest.lastName,
+                    password: saveEmployeeRequest.password,
+                    firstName: saveEmployeeRequest.firstName,
+                    managerId: saveEmployeeRequest.managerId,
+                    employeeId: saveEmployeeRequest.employeeId,
+                    classification: saveEmployeeRequest.classification
+                },
+                <Sequelize.InstanceUpdateOptions>{
+                    transaction: updateTransaction
+                });
+        }).then((updatedEmployee: EmployeeModel): CommandResponse<Employee> => {
+            updateTransaction.commit();
+
+            return <CommandResponse<Employee>>{
+                status: 200,
+                data: EmployeeHelper.mapEmployeeData(updatedEmployee)
+            };
+        }).catch((error: any): Promise<CommandResponse<Employee>> => {
+            if (updateTransaction != null) {
+                updateTransaction.rollback();
+            }
+
             return Promise.reject(<CommandResponse<Employee>>{
-                status: 404,
-                message: Resources.getString(ResourceKey.EMPLOYEE_NOT_FOUND)
+                status: (error.status || 500),
+                message: (error.message
+                    || Resources.getString(ResourceKey.EMPLOYEE_UNABLE_TO_SAVE))
             });
-        }
-
-        return queriedEmployee.update(
-            <Object>{
-                active: saveEmployeeRequest.active,
-                lastName: saveEmployeeRequest.lastName,
-                password: saveEmployeeRequest.password,
-                firstName: saveEmployeeRequest.firstName,
-                managerId: saveEmployeeRequest.managerId,
-                employeeId: saveEmployeeRequest.employeeId,
-                classification: saveEmployeeRequest.classification
-            },
-            <Sequelize.InstanceUpdateOptions>{
-                transaction: updateTransaction
-            });
-    }).then((updatedEmployee: EmployeeModel): CommandResponse<Employee> => {
-        updateTransaction.commit();
-
-        return <CommandResponse<Employee>> {
-            status: 200,
-            data: EmployeeHelper.mapEmployeeData(updatedEmployee)
-        };
-    }).catch((error: any): Promise<CommandResponse<Employee>> => {
-        if (updateTransaction != null) {
-            updateTransaction.rollback();
-        }
-
-        return Promise.reject(<CommandResponse<Employee>>{
-            status: (error.status || 500),
-            message: (error.message
-                || Resources.getString(ResourceKey.EMPLOYEE_UNABLE_TO_SAVE))
         });
-    });
 }
