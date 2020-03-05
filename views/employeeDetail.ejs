@@ -47,12 +47,50 @@
 						</td>
 					</tr>
 					<!-- TODO: Other employee inputs -->
+					<tr>
+						<td>First Name:</td>
+						<td>
+							<input id="firstName" type="text" value="">
+						</td>
+					</tr>
+					<tr>
+						<td>Last Name:</td>
+						<td>
+							<input id="lastName" type="text" value="">
+						</td>
+					</tr>
+					<tr>
+						<td>Password:</td>
+						<td>
+							<input id="password" type="text" value="">
+						</td>
+					</tr>
+					<tr>
+						<td>Confirm Password:</td>
+						<td>
+							<input id="confirmPassword" type="text" value="">
+						</td>
+					</tr>
+					<tr>
+						<td>Employee Position:</td>
+						<td>
+							<select id="position">
+							<option value="cashier">Cashier</option>
+							<option value="shiftManager">Shift Manager</option>
+							<option value="generalManager">General Manager</option>
+							</select>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
 
 		<!-- TODO: An action element to initiate a save -->
-
+		<div>
+			<br />
+			<button id="saveButton" type="button" class="action">Save</button>
+		</div>
+		
 		<div id="employeeSavedAlertModal" class="modal animate-opacity-show">
 			<div class="modal-content">
 				<div class="container gray-blue">
@@ -66,7 +104,7 @@
 	</div>
 
 	<div class="footer <% if (locals.isInitialEmployee) { %>hidden<% } %>">
-		<img id="signOutImage" src="/images/Sign-Out.png" alt="Sign Out" class="footer" />
+		<a href="/signIn/"><img id="signOutImage" src="/images/Sign-Out.png" alt="Sign Out" class="footer" />
 	</div>
 
 </body>
