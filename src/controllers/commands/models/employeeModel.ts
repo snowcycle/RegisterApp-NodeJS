@@ -6,11 +6,12 @@ import { Model, DataTypes, InitOptions, ModelAttributes, ModelAttributeColumnOpt
 export class EmployeeModel extends Model {
 	public active!: boolean;
 	public lastName!: string;
-	public password!: Buffer;
+	public password!: string;
 	public firstName!: string;
 	public managerId!: string;
 	public employeeId!: number;
 	public classification!: number;
+	public status!: number;
 
 	public readonly id!: string;
 	public readonly createdOn!: Date;
