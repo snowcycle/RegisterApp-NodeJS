@@ -8,13 +8,16 @@ export enum QueryParameterLookup {
 
 export enum ViewNameLookup {
 	ProductDetail = "productDetail",
-	ProductListing = "productListing"
+	ProductListing = "productListing",
+	Signin = "signin"
 }
 
 export enum RouteLookup {
 	// Page routing
 	ProductListing = "/",
 	ProductDetail = "/productDetail",
+	Signin = "/signin",
+
 
 	// Page routing - parameters
 	ProductIdParameter = "/:productId",

@@ -10,7 +10,7 @@ export interface EmployeeSaveRequest {
 	id?: string;
 	active: boolean;
 	lastName: string;
-	password: Buffer;
+	password: string;
 	firstName: string;
 	managerId?: string;
 	classification: number;
@@ -83,4 +83,8 @@ export interface CommandResponse<T> {
 	data?: T;
 	status: number;
 	message?: string;
+}
+
+export interface SignInPageResponse extends PageResponse {
+	isElevatedUser: boolean;
 }
