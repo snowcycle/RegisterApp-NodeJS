@@ -27,7 +27,9 @@
 
 		<div class="productsWrapper">
 			<div>
-				<a href="/productDetail/" class="button">Create New</a>
+				<% if (locals.isElevatedUser) { %>
+					<a href="/productDetail/" class="button">Create New</a>
+				<% } %>
 			</div>
 			<br />
 			<br />
