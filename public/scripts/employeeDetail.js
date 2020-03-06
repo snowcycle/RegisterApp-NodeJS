@@ -6,26 +6,69 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Save
-function saveActionClick(event) {0
+function saveActionClick(event) {
   // TODO: Actually save the employee via an AJAX call
-  const firstName = getFirstName();
+  if(!validateSave()) {
+    return;
+  }
+
+  const saveActionElement = event.target;
+  saveActionElement.disabled = true;
+
+  const FirstName = getFirstName();
+  const LastName = getLastName();
+  const Password = getPassword();
+  const ConfirmPassword = getConfirmPassword();
+  const Position = getPosition();
+  const saveActionUrl = ("/api/employeeDetail/" + (employeeId));
+  const saveEmployeeRequest = {
+    active: false,
+    firstName: FirstName,
+    lastName: LastName,
+    password: Password,
+    managerId: getManagerId(),
+    employeeId: getEmployeeId(),
+    classification: Position
+  }
+
+  if (getEmployeeId != null) {
+    ajaxPatch()
+  }
+  ajaxPost(saveActionUrl, saveEmployeeRequest, (callbackResponse) => {
+    saveActionElement.disabled = false;
+
+    if (isSuccessResponse(callbackResponse)) {
+      displayEmployeeSavedAlertModal();
+    }
+  });
+
+}
+
+function validateSave() {
+	const firstName = getFirstName();
   const lastName = getLastName();
   const password = getPassword();
   const confirmPassword = getConfirmPassword();
   const position = getPosition();
-  const saveActionUrl = ("/api/employeeDetail/" + (employeeId));
-  const saveEmployeeRequest = {
 
+  if (firstName == null) {
+    displayError("Please provide a first name");
+    return false;
+  } else if (firstName == null) {
+      displayError("Please provide a first name");
+      return false;
+  } else if (lastName == null) {
+      displayError("Please provide a last name");
+      return false;
+  } else if (password !== confirmPassword) {
+      displayError("Passwords do not match");
+      return false;
+  } else if (position !== "Cashier" || position !== "Shift Manager" || position !== "General Manager") {
+      displayError("Incorrect employee type")  
+      return false;
   }
-
-  if(firstName && lastName && (password == confirmPassword) && 
-  (position == "Cashier" || position == "Shift Manager" || position == "General Manager")) {
-    ajaxPost(saveActionUrl, saveEmployeeRequest, (callbackResponse) => {
-      
-    });
-  }
-
-	displayEmployeeSavedAlertModal();
+  
+  return true;
 }
 
 function displayEmployeeSavedAlertModal() {
@@ -49,8 +92,16 @@ function hideEmployeeSavedAlertModal() {
 }
 // End save
 
-function getEmployeeId() {
+function getId() {
   return document.getElementById("employeeId").value;
+}
+
+function getManagerId() {
+  return document.getElementById("managerId").value;
+}
+
+function getEmployeeId() {
+  return document.getElementById("employeeEmployeeId").value;
 }
 
 function getFirstName() {
