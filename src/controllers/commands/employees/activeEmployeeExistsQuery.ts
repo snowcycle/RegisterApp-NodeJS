@@ -5,11 +5,14 @@ import * as EmployeeHelper from "./helpers/employeeHelper";
 import * as EmployeeRepository from "../models/employeeModel";
 import { Resources, ResourceKey } from "../../../resourceLookup";
 
-export const exsists = async (employeeId?: string): Promise<CommandResponse<Employee>> => {
-    if(EmployeeRepository.queryActiveExists(employeeId))
+export const exsists = async (): Promise<CommandResponse<Employee>> => {
+    if(EmployeeRepository.queryActiveExists())
     {
         
-        //they exists yaay
+        return Promise.reject(<CommandResponse<Employee>>{
+			status: 422,
+			message: Resources.getString("Employee exsists")
+		});
     }
     else
     {

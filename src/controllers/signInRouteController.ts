@@ -19,14 +19,14 @@ const processStartProductListingError = (error: any, res: Response): void => {
 };
 
 export const start = async (req: Request, res: Response): Promise<void> => {
-		console.log("TO")
-		/* 	return res.render(
-				ViewNameLookup.Signin,
-				<SignInPageResponse>{
-					isElevatedUser: true
-    }); */
+	return res.render(
+		ViewNameLookup.Signin,
+		<SignInPageResponse>{
+			isElevatedUser: true
+});
 };
+
 export const signin = async (req: Request, res: Response): Promise<void> => {
-     console.log("Posyi");
+     console.log("HIT THE POST");
      return res.redirect("/signin");
 }; 
