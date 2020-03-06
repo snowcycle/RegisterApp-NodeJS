@@ -3,6 +3,11 @@ div.header {
 	text-align: right;
 }
 
+img.footer {
+	margin-right: 5%;
+	float: right;
+}
+
 div.main {
 	padding-top: 0px;
 	text-align: center
