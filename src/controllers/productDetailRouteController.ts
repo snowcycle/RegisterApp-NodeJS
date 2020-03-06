@@ -6,6 +6,7 @@ import * as ProductCreateCommand from "./commands/products/productCreateCommand"
 import * as ProductDeleteCommand from "./commands/products/productDeleteCommand";
 import * as ProductUpdateCommand from "./commands/products/productUpdateCommand";
 import { CommandResponse, Product, ProductDetailPageResponse, ApiResponse, ProductSaveResponse, ProductSaveRequest } from "./typeDefinitions";
+import * as EmployeeQuery from "./commands/employees/employeeQuery";
 
 const processStartProductDetailError = (res: Response, error: any): void => {
 	let errorMessage: (string | undefined) = "";
@@ -28,15 +29,20 @@ const processStartProductDetailError = (res: Response, error: any): void => {
 
 export const start = async (req: Request, res: Response): Promise<void> => {
 	return ProductQuery.queryById(req.params[ParameterLookup.ProductId])
-		.then((productsCommandResponse: CommandResponse<Product>): void => {
-			return res.render(
-				ViewNameLookup.ProductDetail,
-				<ProductDetailPageResponse>{
-					product: productsCommandResponse.data
+		.then((productsCommandResponse: CommandResponse<Product>):  CommandResponse<Product> => {
+
+			return productsCommandResponse}).then(async (productValues: any) => {
+				
+				await EmployeeQuery.isElevatedUser().then((employeeCommandResponse: CommandResponse<boolean>): void => {
+					return res.render(ViewNameLookup.ProductDetail, (<ProductDetailPageResponse>{
+						product: productValues.data,
+						isElevatedUser: employeeCommandResponse.data
+					}));
 				});
-		}).catch((error: any): void => {
-			return processStartProductDetailError(res, error);
-		});
+				
+			}).catch((error: any): void => {
+				return processStartProductDetailError(error, res);
+			});		
 };
 
 const saveProduct = async (
