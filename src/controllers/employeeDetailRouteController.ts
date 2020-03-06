@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
+import { ViewNameLookup } from "./lookups/routingLookup";
 import * as Helper from "./helpers/routeControllerHelper";
 import { Resources, ResourceKey } from "../resourceLookup";
 import * as EmployeeHelper from "./commands/employees/helpers/employeeHelper";
 import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
-import { CommandResponse, Employee, EmployeeSaveRequest, ActiveUser } from "./typeDefinitions";
+import { CommandResponse, Employee, EmployeeSaveRequest, ActiveUser, EmployeeDetailPageResponse } from "./typeDefinitions";
+import * as EmployeesQuery from "./commands/employees/employeesQuery"
+import * as EmployeeQuery from "./commands/employees/employeeQuery"
 
 interface CanCreateEmployee {
 	employeeExists: boolean;
@@ -13,7 +16,19 @@ interface CanCreateEmployee {
 const determineCanCreateEmployee = async (req: Request): Promise<CanCreateEmployee> => {
 	// TODO: Logic to determine if the user associated with the current session
 	//  is able to create an employee
-	return <CanCreateEmployee>{ employeeExists: false, isElevatedUser: false };
+	const employees: CommandResponse<Employee[]> = await EmployeesQuery.query()
+	.then((employees: CommandResponse<Employee[]>): CommandResponse<Employee[]> => {
+		return employees
+	});
+	const isElevatedUser: CommandResponse<boolean> = await EmployeeQuery.isElevatedUser()
+	.then((employeeCommandResponse: CommandResponse<boolean>): CommandResponse<boolean> => {
+		return employeeCommandResponse;
+	});
+
+	return <CanCreateEmployee> { 
+		employeeExists: employees.data ? true : false,
+		isElevatedUser: isElevatedUser.data 
+	};
 };
 
 export const start = async (req: Request, res: Response): Promise<void> => {
@@ -30,6 +45,13 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 			}
 
 			// TODO: Serve up the page
+			res.setHeader(
+				"Cache-Control",
+				"no-cache, max-age=0, must-revalidate, no-store");
+
+			return res.render(
+				ViewNameLookup.EmployeeDetail
+			);
 		}).catch((error: any): void => {
 			// TODO: Handle any errors that occurred
 		});
