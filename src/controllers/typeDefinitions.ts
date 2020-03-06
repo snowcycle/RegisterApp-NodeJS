@@ -69,6 +69,10 @@ export interface ProductListingPageResponse extends PageResponse {
 export interface MainMenuPageResponse extends PageResponse {
 	isElevatedUser: boolean;
 }
+
+export interface EmployeeDetailPageResponse extends PageResponse {
+	
+}
 // End page response data
 
 // API response data

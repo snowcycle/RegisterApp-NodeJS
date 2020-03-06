@@ -108,3 +108,9 @@ export const queryActiveExists = async (): Promise<EmployeeModel | null> => {
 		where: <Sequelize.WhereAttributeHash>{ active: true }
 	});
 };
+
+export const queryAll = async (): Promise<EmployeeModel[]> => {
+	return EmployeeModel.findAll(<Sequelize.FindOptions>{
+		order: [ [ EmployeeFieldName.CreatedOn, "ASC" ] ]
+	});
+};
