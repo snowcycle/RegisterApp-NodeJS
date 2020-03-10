@@ -9,7 +9,7 @@ export enum QueryParameterLookup {
 export enum ViewNameLookup {
 	ProductDetail = "productDetail",
 	ProductListing = "productListing",
-	Signin = "signin"
+	Signin = "signin", //communicate on name for this
 	MainMenu = "mainMenu",
 	EmployeeDetail = "employeeDetail"
 }
@@ -18,7 +18,7 @@ export enum RouteLookup {
 	// Page routing
 	ProductListing = "/productListing",
 	ProductDetail = "/productDetail",
-	Signin = "/signin",
+	Signin = "/",
 	EmployeeDetail = "/employeeDetail",
 	MainMenu = "/mainMenu",
 
