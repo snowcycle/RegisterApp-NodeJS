@@ -29,7 +29,7 @@ export const start = async (req: Request, res: Response) => {
 			}
 		);
 	} else {
-		res.redirect("/signIn"); //doesn't match route lookup
+		res.redirect("/"); //doesn't match route lookup
 	}
 };
 
