@@ -1,9 +1,22 @@
-import { CommandResponse, Employee } from "../../typeDefinitions";
 import { EmployeeModel } from "../models/employeeModel";
-import * as Helper from "../helpers/helper";
-import * as EmployeeHelper from "./helpers/employeeHelper";
+import { CommandResponse, Employee } from "../../typeDefinitions";
 import * as EmployeeRepository from "../models/employeeModel";
+import * as EmployeeHelper from "../employees/helpers/employeeHelper";
+import * as Helper from "../helpers/helper";
 import { Resources, ResourceKey } from "../../../resourceLookup";
+export class employeeQuery {
+    
+}
+
+export const isElevatedUser = async (): Promise<CommandResponse<boolean>> => {
+	return EmployeeRepository.queryActiveExists()
+		.then((queriedEmployee: EmployeeModel | null): CommandResponse<boolean> => {
+			return <CommandResponse<boolean>>{
+				status: 200,
+				data: EmployeeHelper.isElevatedUser(queriedEmployee)
+			};
+		})
+};
 
 
 export const queryById = async (employeeRecordId?: string): Promise<CommandResponse<Employee>> => {
