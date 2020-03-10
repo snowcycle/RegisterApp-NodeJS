@@ -1,6 +1,6 @@
 import Sequelize from "sequelize";
 import * as DatabaseConnection from "../models/databaseConnection";
-import * as  ActiveUserModel from "../models/ActiveUserModel";
+import * as  ActiveUserModel from "../models/activeUserModel";
 import { ActiveUser } from "../../typeDefinitions";
 
 export const clearActive = async (session : Express.Session) => {
