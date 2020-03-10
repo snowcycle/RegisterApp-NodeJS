@@ -92,3 +92,11 @@ export interface CommandResponse<T> {
 	status: number;
 	message?: string;
 }
+
+export interface SignInPageResponse extends PageResponse {
+	isElevatedUser: boolean;
+}
+export interface SignIn {
+	employeeId: string;
+	password: string;
+}
