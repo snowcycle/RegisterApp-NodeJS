@@ -19,7 +19,7 @@ const processStartMainMenuError = (error: any, res: Response): void => {
 
 export const start = async (req: Request, res: Response) => {
 	const isAciveUser = req.session?.key ? isActive(req.session.key) : false;
-	if (isAciveUser) {
+	if (!isAciveUser) { //change for sprint 2
 		res.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
 
 		return res.render(
@@ -29,7 +29,7 @@ export const start = async (req: Request, res: Response) => {
 			}
 		);
 	} else {
-		res.redirect("/signIn");
+		res.redirect("/"); //doesn't match route lookup
 	}
 };
 
