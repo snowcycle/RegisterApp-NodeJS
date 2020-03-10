@@ -5,7 +5,7 @@ import { Resources, ResourceKey } from "../../../resourceLookup";
 import * as DatabaseConnection from "../models/databaseConnection";
 import { EmployeeModel } from "../models/employeeModel";
 import Sequelize from "sequelize";
-import * as  ActiveUserModel from "../models/ActiveUserModel";
+import * as  ActiveUserModel from "../models/activeUserModel";
 import { EmployeeClassification } from "../models/constants/entityTypes";
 import * as EmployeeRepository from "../models/employeeModel";
 
