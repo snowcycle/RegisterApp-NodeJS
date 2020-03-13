@@ -1,32 +1,37 @@
-import { EmployeeClassification } from "../../models/constants/entityTypes";
-import { EmployeeModel } from "../../models/employeeModel";
+import * as crypto from "crypto";
 import { Employee } from "../../../typeDefinitions";
+import { EmployeeModel } from "../../models/employeeModel";
+import { EmployeeClassification } from "../../models/constants/entityTypes";
+
+const employeeIdBase: string = "00000";
 
 export const hashString = (toHash: string): string => {
-	return ""; // TODO: Look at https://nodejs.org/docs/latest-v12.x/api/crypto.html#crypto_crypto_createhash_algorithm_options as one option
+	const hash = crypto.createHash("sha256");
+	hash.update(toHash);
+	return hash.digest("hex");
 };
 
-export const isElevatedUser = (employee: EmployeeModel | null): boolean => {
-	if(employee){
-		if(employee.classification === EmployeeClassification.GeneralManager)
-			return true;
-		else if(employee.classification === EmployeeClassification.ShiftManager)
-			return true;
-		else
-		return false;
-	}
-		return false;
+export const padEmployeeId = (employeeId: number): string => {
+	const employeeIdAsString: string = employeeId.toString();
+
+	return (employeeIdBase + employeeIdAsString)
+		.slice(-Math.max(employeeIdBase.length, employeeIdAsString.length));
 };
 
-export const mapEmployeeData = (queriedProduct: EmployeeModel): Employee => {
+export const mapEmployeeData = (queriedEmployee: EmployeeModel): Employee => {
 	return <Employee>{
-		id: queriedProduct.id,
-		active: queriedProduct.active,
-		lastName: queriedProduct.lastName,
-		createdOn: queriedProduct.createdOn,
-		firstName: queriedProduct.firstName,
-		managerId: queriedProduct.managerId,
-		employeeId: queriedProduct.employeeId.toString(),
-		classification: queriedProduct.classification
+		id: queriedEmployee.id,
+		active: queriedEmployee.active,
+		lastName: queriedEmployee.lastName,
+		createdOn: queriedEmployee.createdOn,
+		firstName: queriedEmployee.firstName,
+		managerId: queriedEmployee.managerId,
+		employeeId: padEmployeeId(queriedEmployee.employeeId),
+		classification: <EmployeeClassification>queriedEmployee.classification
 	};
+};
+
+export const isElevatedUser = (employeeClassification: EmployeeClassification): boolean => {
+	return ((employeeClassification === EmployeeClassification.GeneralManager)
+		|| (employeeClassification === EmployeeClassification.ShiftManager));
 };

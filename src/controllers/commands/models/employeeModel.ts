@@ -6,12 +6,11 @@ import { Model, DataTypes, InitOptions, ModelAttributes, ModelAttributeColumnOpt
 export class EmployeeModel extends Model {
 	public active!: boolean;
 	public lastName!: string;
-	public password!: string;
+	public password!: Buffer;
 	public firstName!: string;
 	public managerId!: string;
 	public employeeId!: number;
 	public classification!: number;
-	public status!: number;
 
 	public readonly id!: string;
 	public readonly createdOn!: Date;
@@ -106,11 +105,5 @@ export const queryActive = async (): Promise<EmployeeModel[]> => {
 export const queryActiveExists = async (): Promise<EmployeeModel | null> => {
 	return EmployeeModel.findOne(<Sequelize.FindOptions>{
 		where: <Sequelize.WhereAttributeHash>{ active: true }
-	});
-};
-
-export const queryAll = async (): Promise<EmployeeModel[]> => {
-	return EmployeeModel.findAll(<Sequelize.FindOptions>{
-		order: [ [ EmployeeFieldName.CreatedOn, "ASC" ] ]
 	});
 };

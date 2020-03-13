@@ -5,20 +5,19 @@ import * as EmployeeDetailRouteController from "../controllers/employeeDetailRou
 function employeeDetailRoutes(server: express.Express) {
 	server.get(
 		RouteLookup.EmployeeDetail,
-        EmployeeDetailRouteController.start);
-        
+		EmployeeDetailRouteController.start);
 	server.get(
 		(RouteLookup.EmployeeDetail + RouteLookup.EmployeeIdParameter),
-		EmployeeDetailRouteController.start);
-
-	server.post(
-		(RouteLookup.API + RouteLookup.EmployeeDetail),
-		EmployeeDetailRouteController.createEmployee);
+		EmployeeDetailRouteController.startWithEmployee);
 
 	server.patch(
 		(RouteLookup.API + RouteLookup.EmployeeDetail
 			+ RouteLookup.EmployeeIdParameter),
 		EmployeeDetailRouteController.updateEmployee);
+
+	server.post(
+		(RouteLookup.API + RouteLookup.EmployeeDetail),
+		EmployeeDetailRouteController.createEmployee);
 }
 
 module.exports.routes = employeeDetailRoutes;

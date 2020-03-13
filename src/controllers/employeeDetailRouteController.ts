@@ -1,39 +1,95 @@
 import { Request, Response } from "express";
-import { ViewNameLookup } from "./lookups/routingLookup";
 import * as Helper from "./helpers/routeControllerHelper";
 import { Resources, ResourceKey } from "../resourceLookup";
+import * as EmployeeQuery from "./commands/employees/employeeQuery";
 import * as EmployeeHelper from "./commands/employees/helpers/employeeHelper";
+import * as EmployeeCreateCommand from "./commands/employees/employeeCreateCommand";
+import * as EmployeeUpdateCommand from "./commands/employees/employeeUpdateCommand";
+import * as EmployeeExistsQuery from "./commands/employees/activeEmployeeExistsQuery";
 import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
-import { CommandResponse, Employee, EmployeeSaveRequest, ActiveUser, EmployeeDetailPageResponse } from "./typeDefinitions";
-import * as EmployeesQuery from "./commands/employees/employeesQuery"
-import * as EmployeeQuery from "./commands/employees/employeeQuery"
-import * as EmployeeModel from "./commands/models/employeeModel"
+import { ViewNameLookup, ParameterLookup, RouteLookup, QueryParameterLookup } from "./lookups/routingLookup";
+import { EmployeeClassification, EmployeeClassificationLabel } from "./commands/models/constants/entityTypes";
+import { CommandResponse, Employee, EmployeeDetailPageResponse, EmployeeSaveRequest, EmployeeSaveResponse, EmployeeType, ActiveUser } from "./typeDefinitions";
 
 interface CanCreateEmployee {
 	employeeExists: boolean;
 	isElevatedUser: boolean;
 }
 
-const determineCanCreateEmployee = async (req: Request): Promise<CanCreateEmployee> => {
-	// TODO: Logic to determine if the user associated with the current session
-	//  is able to create an employee
-	const employees: CommandResponse<Employee[]> = await EmployeesQuery.query()
-	.then((employees: CommandResponse<Employee[]>): CommandResponse<Employee[]> => {
-		return employees
+const buildEmployeeTypes = (): EmployeeType[] => {
+	const employeeTypes: EmployeeType[] = [];
+
+	employeeTypes.push(<EmployeeType>{
+		value: EmployeeClassification.NotDefined,
+		label: EmployeeClassificationLabel.NotDefined
 	});
-	const isElevatedUser: CommandResponse<boolean> = await EmployeeQuery.isElevatedUser()
-	.then((employeeCommandResponse: CommandResponse<boolean>): CommandResponse<boolean> => {
-		return employeeCommandResponse;
+	employeeTypes.push(<EmployeeType>{
+		value: EmployeeClassification.Cashier,
+		label: EmployeeClassificationLabel.Cashier
+	});
+	employeeTypes.push(<EmployeeType>{
+		value: EmployeeClassification.ShiftManager,
+		label: EmployeeClassificationLabel.ShiftManager
+	});
+	employeeTypes.push(<EmployeeType>{
+		value: EmployeeClassification.GeneralManager,
+		label: EmployeeClassificationLabel.GeneralManager
 	});
 
-	// return <CanCreateEmployee> { 
-	// 	employeeExists: employees.data ? true : false,
-	// 	isElevatedUser: isElevatedUser.data 
-	// };
-	return <CanCreateEmployee> { 
-		employeeExists: false,
-		isElevatedUser: isElevatedUser.data 
+	return employeeTypes;
+};
+
+const buildEmptyEmployee = (): Employee => {
+	return <Employee>{
+		id: "",
+		lastName: "",
+		active: false,
+		firstName: "",
+		employeeId: "",
+		classification: EmployeeClassification.NotDefined,
+		managerId: Resources.getString(ResourceKey.EMPTY_UUID)
 	};
+};
+
+const processStartEmployeeDetailError = (error: any, res: Response): void => {
+	if (Helper.processStartError(error, res)) {
+		return;
+	}
+
+	res.status((error.status || 500))
+		.render(
+			ViewNameLookup.EmployeeDetail,
+			<EmployeeDetailPageResponse>{
+				isInitialEmployee: false,
+				employee: buildEmptyEmployee(),
+				employeeTypes: buildEmployeeTypes(),
+				errorMessage: (error.message
+					|| Resources.getString(ResourceKey.EMPLOYEE_UNABLE_TO_QUERY))
+			});
+};
+
+const determineCanCreateEmployee = async (req: Request): Promise<CanCreateEmployee> => {
+	let employeeExists: boolean;
+
+	return EmployeeExistsQuery.query()
+		.then((employeeExistsCommandResponse: CommandResponse<boolean>): Promise<CommandResponse<ActiveUser>> => {
+			employeeExists = ((employeeExistsCommandResponse.data != null)
+				&& employeeExistsCommandResponse.data);
+
+			if (!employeeExists) {
+				return Promise.resolve(
+					<CommandResponse<ActiveUser>>{ status: 200 });
+			}
+
+			return ValidateActiveUser.execute((<Express.Session>req.session).id);
+		}).then((activeUserCommandResponse: CommandResponse<ActiveUser>): CanCreateEmployee => {
+			return <CanCreateEmployee>{
+				employeeExists: employeeExists,
+				isElevatedUser: ((activeUserCommandResponse.data != null)
+					&& EmployeeHelper.isElevatedUser(
+						(<ActiveUser>activeUserCommandResponse.data).classification))
+			};
+		});
 };
 
 export const start = async (req: Request, res: Response): Promise<void> => {
@@ -42,51 +98,54 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 	}
 
 	return determineCanCreateEmployee(req)
-		.then((canCreateEmployee: CanCreateEmployee) => {
-			if (!canCreateEmployee.employeeExists
-				|| canCreateEmployee.isElevatedUser) {
-				
-				res.setHeader(
-					"Cache-Control",
-					"no-cache, max-age=0, must-revalidate, no-store");
-				
-				return res.render(
-					ViewNameLookup.EmployeeDetail
-				);
-			} 
-			return EmployeeModel.queryActiveExists()
-				.then((employee: EmployeeModel.EmployeeModel | null) => {
-					if (employee) {
-						return res.redirect(Helper.buildNoPermissionsRedirectUrl());
-					}
-					return res.redirect("/mainMenu");
-				})
+		.then((canCreateEmployee: CanCreateEmployee): void => {
+			if (canCreateEmployee.employeeExists
+				&& !canCreateEmployee.isElevatedUser) {
+
+				return res.redirect(Helper.buildNoPermissionsRedirectUrl());
+			}
+
+			return res.render(
+				ViewNameLookup.EmployeeDetail,
+				<EmployeeDetailPageResponse>{
+					employee: buildEmptyEmployee(),
+					employeeTypes: buildEmployeeTypes(),
+					isInitialEmployee: !canCreateEmployee.employeeExists,
+					errorMessage: Resources.getString(req.query[QueryParameterLookup.ErrorCode])
+				});
 		}).catch((error: any): void => {
-			// TODO: Handle any errors that occurred
+			return processStartEmployeeDetailError(error, res);
 		});
 };
 
 export const startWithEmployee = async (req: Request, res: Response): Promise<void> => {
-	// if (Helper.handleInvalidSession(req, res)) {
-	// 	return;
-	// }
+	if (Helper.handleInvalidSession(req, res)) {
+		return;
+	}
 
-	// return ValidateActiveUser.execute((<Express.Session>req.session).id)
-	// 	.then((activeUserCommandResponse: CommandResponse<ActiveUser>): Promise<void> => {
-	// 		if (!EmployeeHelper.isElevatedUser((<ActiveUser>activeUserCommandResponse.data).classification)) {
-	// 			return Promise.reject(<CommandResponse<Employee>>{
-	// 				status: 403,
-	// 				message: Resources.getString(ResourceKey.USER_NO_PERMISSIONS)
-	// 			});
-	// 		}
+	return ValidateActiveUser.execute((<Express.Session>req.session).id)
+		.then((activeUserCommandResponse: CommandResponse<ActiveUser>): Promise<CommandResponse<Employee>> => {
+			if (!EmployeeHelper.isElevatedUser((<ActiveUser>activeUserCommandResponse.data).classification)) {
+				return Promise.reject(<CommandResponse<Employee>>{
+					status: 403,
+					message: Resources.getString(ResourceKey.USER_NO_PERMISSIONS)
+				});
+			}
 
-	// 		// TODO: Query the employee details using the request route parameter
-	// 		return Promise.resolve();
-	// 	}).then((/* TODO: Some employee details */): void => {
-	// 		// TODO: Serve up the page
-	// 	}).catch((error: any): void => {
-	// 		// TODO: Handle any errors that occurred
-	// 	});
+			return EmployeeQuery.queryById(
+				req.params[ParameterLookup.EmployeeId]);
+		}).then((employeeCommandResponse: CommandResponse<Employee>): void => {
+			return res.render(
+				ViewNameLookup.EmployeeDetail,
+				<EmployeeDetailPageResponse>{
+					isInitialEmployee: false,
+					employeeTypes: buildEmployeeTypes(),
+					employee: employeeCommandResponse.data,
+					errorMessage: Resources.getString(req.query[QueryParameterLookup.ErrorCode])
+				});
+		}).catch((error: any): void => {
+			return processStartEmployeeDetailError(error, res);
+		});
 };
 
 const saveEmployee = async (
@@ -119,7 +178,18 @@ const saveEmployee = async (
 
 			return performSave(req.body, !employeeExists);
 		}).then((saveEmployeeCommandResponse: CommandResponse<Employee>): void => {
-			// TODO: Handle the save response and send a response to the HTTP request
+			const response: EmployeeSaveResponse = <EmployeeSaveResponse>{
+				employee: <Employee>saveEmployeeCommandResponse.data
+			};
+
+			if (!employeeExists) {
+				response.redirectUrl = (RouteLookup.SignIn
+					+ "?" + QueryParameterLookup.EmployeeId
+					+ "=" + (<Employee>saveEmployeeCommandResponse.data).employeeId);
+			}
+
+			res.status(saveEmployeeCommandResponse.status)
+				.send(response);
 		}).catch((error: any): void => {
 			return Helper.processApiError(
 				error,
@@ -132,9 +202,9 @@ const saveEmployee = async (
 };
 
 export const updateEmployee = async (req: Request, res: Response): Promise<void> => {
-	return; // TODO: invoke saveEmployee() with the appropriate save functionality
+	return saveEmployee(req, res, EmployeeUpdateCommand.execute);
 };
 
 export const createEmployee = async (req: Request, res: Response): Promise<void> => {
-	return; // TODO: invoke saveEmployee() with the appropriate save functionality
+	return saveEmployee(req, res, EmployeeCreateCommand.execute);
 };
