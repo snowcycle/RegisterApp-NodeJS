@@ -46,38 +46,37 @@
 							<input id="employeeEmployeeId" type="text" value="<% if (locals.employee && locals.employee.employeeId) { %><%= locals.employee.employeeId %><% } %>" class="update" disabled />
 						</td>
 					</tr>
-					<!-- TODO: Other employee inputs -->
 					<tr>
-						<td>First Name:</td>
+						<td class="label">First Name:</td>
 						<td>
-							<input id="firstName" type="text" value="">
+							<input id="employeeFirstName" type="text" value="<% if (locals.employee && locals.employee.firstName) { %><%= locals.employee.firstName %><% } %>" class="update" />
 						</td>
 					</tr>
 					<tr>
-						<td>Last Name:</td>
+						<td class="label">Last Name:</td>
 						<td>
-							<input id="lastName" type="text" value="">
+							<input id="employeeLastName" type="text" value="<% if (locals.employee && locals.employee.lastName) { %><%= locals.employee.lastName %><% } %>" class="update" />
 						</td>
 					</tr>
 					<tr>
-						<td>Password:</td>
+						<td class="label">Password:</td>
 						<td>
-							<input id="password" type="text" value="">
+							<input id="employeePassword" type="password" value="" class="update" />
 						</td>
 					</tr>
 					<tr>
-						<td>Confirm Password:</td>
+						<td class="label">Confirm Password:</td>
 						<td>
-							<input id="confirmPassword" type="text" value="">
+							<input id="employeeConfirmPassword" type="password" value="" class="update" />
 						</td>
 					</tr>
-					<tr>
-						<td>Employee Position:</td>
+					<tr <% if (locals.isInitialEmployee) { %>class="hidden"<% } %>>
+						<td class="label">Employee Type:</td>
 						<td>
-							<select id="position">
-							<option value="cashier">Cashier</option>
-							<option value="shiftManager">Shift Manager</option>
-							<option value="generalManager">General Manager</option>
+							<select id="employeeType" class="select">
+								<% locals.employeeTypes.forEach((employeeType) => { %>
+									<option value="<%= employeeType.value %>" <% if ((locals.employee != null) && (locals.employee.classification === employeeType.value)) { %>selected<% } %>><%= employeeType.label %></option>
+								<% }); %>
 							</select>
 						</td>
 					</tr>
@@ -85,12 +84,11 @@
 			</table>
 		</div>
 
-		<!-- TODO: An action element to initiate a save -->
-		<div>
+		<div class="employeeActionsWrapper <% if (locals.errorMessage && (locals.errorMessage !== "")) { %>hidden<% } %>">
 			<br />
 			<button id="saveButton" type="button" class="action">Save</button>
 		</div>
-		
+
 		<div id="employeeSavedAlertModal" class="modal animate-opacity-show">
 			<div class="modal-content">
 				<div class="container gray-blue">
@@ -104,7 +102,7 @@
 	</div>
 
 	<div class="footer <% if (locals.isInitialEmployee) { %>hidden<% } %>">
-		<a href="/signIn/"><img id="signOutImage" src="/images/Sign-Out.png" alt="Sign Out" class="footer" />
+		<img id="signOutImage" src="/images/Sign-Out.png" alt="Sign Out" class="footer" />
 	</div>
 
 </body>

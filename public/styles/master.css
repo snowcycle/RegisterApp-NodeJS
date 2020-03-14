@@ -3,11 +3,6 @@ div.header {
 	text-align: right;
 }
 
-img.footer {
-	margin-right: 5%;
-	float: right;
-}
-
 div.main {
 	padding-top: 0px;
 	text-align: center
@@ -33,6 +28,24 @@ tr.hidden,
 th.hidden,
 td.hidden {
 	display: none
+}
+
+div.footer {
+	left: 0;
+	right: 0;
+	bottom: 0;
+	position: absolute;
+}
+
+img.footer {
+	z-index: 1;
+	height: 50px;
+    text-decoration: none;
+    display: inline-block;
+	cursor: pointer;
+	position: fixed;
+	right: 20;
+	bottom: 20;
 }
 
 div.inputContent,

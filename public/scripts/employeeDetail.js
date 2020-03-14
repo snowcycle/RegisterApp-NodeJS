@@ -1,74 +1,121 @@
 let hideEmployeeSavedAlertTimer = undefined;
 
 document.addEventListener("DOMContentLoaded", () => {
-  // TODO: Things that need doing when the view is loaded
-  document.getElementById("saveButton").addEventListener("click", saveActionClick);
+	document.getElementById("saveButton")
+		.addEventListener("click", saveActionClick);
+
+	const employeeFirstNameEditElement =
+		getEmployeeFirstNameEditElement();
+	employeeFirstNameEditElement.focus();
+	employeeFirstNameEditElement.select();
 });
 
 // Save
 function saveActionClick(event) {
-  // TODO: Actually save the employee via an AJAX call
-  if(!validateSave()) {
-    return;
-  }
+	if (!validateSave()) {
+		return;
+	}
 
-  const saveActionElement = event.target;
-  saveActionElement.disabled = true;
+	const saveActionElement = event.target;
+	saveActionElement.disabled = true;
 
-  const FirstName = getFirstName();
-  const LastName = getLastName();
-  const Password = getPassword();
-  const ConfirmPassword = getConfirmPassword();
-  const Position = getPosition();
-  const saveActionUrl = ("/api/employeeDetail/" + (employeeId));
-  const saveEmployeeRequest = {
-    active: false,
-    firstName: FirstName,
-    lastName: LastName,
-    password: Password,
-    managerId: getManagerId(),
-    employeeId: getEmployeeId(),
-    classification: Position
-  }
+	const employeeId = getEmployeeId();
+	const employeeIdIsDefined = (employeeId.trim() !== "");
+	const saveActionUrl = ("/api/employeeDetail/"
+		+ (employeeIdIsDefined ? employeeId : ""));
+	const saveEmployeeRequest = {
+		id: employeeId,
+		managerId: getEmployeeManagerId(),
+		lastName: getEmployeeLastNameEditElement().value,
+		password: getEmployeePasswordEditElement().value,
+		firstName: getEmployeeFirstNameEditElement().value,
+		classification: getEmployeeTypeSelectElement().value
+	};
 
-  if (getEmployeeId != null) {
-    ajaxPatch()
-  }
-  ajaxPost(saveActionUrl, saveEmployeeRequest, (callbackResponse) => {
-    saveActionElement.disabled = false;
+	if (employeeIdIsDefined) {
+		ajaxPatch(saveActionUrl, saveEmployeeRequest, (callbackResponse) => {
+			saveActionElement.disabled = false;
 
-    if (isSuccessResponse(callbackResponse)) {
-      displayEmployeeSavedAlertModal();
-    }
-  });
+			if (isSuccessResponse(callbackResponse)) {
+				completeSaveAction(callbackResponse);
+			}
+		});
+	} else {
+		ajaxPost(saveActionUrl, saveEmployeeRequest, (callbackResponse) => {
+			saveActionElement.disabled = false;
 
+			if (isSuccessResponse(callbackResponse)) {
+				completeSaveAction(callbackResponse);
+			}
+		});
+	}
 }
 
 function validateSave() {
-	const firstName = getFirstName();
-  const lastName = getLastName();
-  const password = getPassword();
-  const confirmPassword = getConfirmPassword();
-  const position = getPosition();
+	const firstNameEditElement = getEmployeeFirstNameEditElement();
+	if (firstNameEditElement.value.trim() === "") {
+		displayError("Please provide a valid employee first name.");
+		firstNameEditElement.focus();
+		firstNameEditElement.select();
+		return false;
+	}
 
-  if (firstName == null) {
-    displayError("Please provide a first name");
-    return false;
-  } else if (firstName == null) {
-      displayError("Please provide a first name");
-      return false;
-  } else if (lastName == null) {
-      displayError("Please provide a last name");
-      return false;
-  } else if (password !== confirmPassword) {
-      displayError("Passwords do not match");
-      return false;
-  } else if (position !== "Cashier" || position !== "Shift Manager" || position !== "General Manager") {
-      displayError("Incorrect employee type")  
-      return false;
-  }
-  
-  return true;
+	const lastNameEditElement = getEmployeeLastNameEditElement();
+	if (lastNameEditElement.value.trim() === "") {
+		displayError("Please provide a valid employee last name.");
+		lastNameEditElement.focus();
+		lastNameEditElement.select();
+		return false;
+	}
+
+	const passwordEditElement = getEmployeePasswordEditElement();
+	if (passwordEditElement.value.trim() === "") {
+		displayError("Please provide a valid employee password.");
+		passwordEditElement.focus();
+		passwordEditElement.select();
+		return false;
+	}
+
+	if (passwordEditElement.value !== getEmployeeConfirmPassword()) {
+		displayError("Passwords do not match.");
+		passwordEditElement.focus()
+		passwordEditElement.select();
+		return false;
+	}
+
+	const employeeTypeSelectElement = getEmployeeTypeSelectElement();
+	if (!employeeTypeSelectElement.closest("tr").classList.contains("hidden")) {
+		if (employeeTypeSelectElement.value <= 0) {
+			displayError("Please provide a valid employee Type.");
+			employeeTypeSelectElement.focus();
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function completeSaveAction(callbackResponse) {
+	if (callbackResponse.data == null) {
+		return;
+	}
+
+	if ((callbackResponse.data.redirectUrl != null)
+		&& (callbackResponse.data.redirectUrl !== "")) {
+
+		window.location.replace(callbackResponse.data.redirectUrl);
+		return;
+	}
+	
+	displayEmployeeSavedAlertModal();
+
+	const employeeEmployeeIdElement = getEmployeeEmployeeIdElement();
+	const employeeEmployeeIdRowElement = employeeEmployeeIdElement.closest("tr");
+	if (employeeEmployeeIdRowElement.classList.contains("hidden")) {
+		setEmployeeId(callbackResponse.data.employee.id);
+		employeeEmployeeIdElement.value = callbackResponse.data.employee.employeeId;
+		employeeEmployeeIdRowElement.classList.remove("hidden");
+	}
 }
 
 function displayEmployeeSavedAlertModal() {
@@ -92,34 +139,46 @@ function hideEmployeeSavedAlertModal() {
 }
 // End save
 
-function getId() {
-  return document.getElementById("employeeId").value;
-}
-
-function getManagerId() {
-  return document.getElementById("managerId").value;
-}
-
+//Getters and setters
 function getEmployeeId() {
-  return document.getElementById("employeeEmployeeId").value;
+	return document.getElementById("employeeId").value;
+}
+function setEmployeeId(employeeId) {
+	document.getElementById("employeeId").value = employeeId;
 }
 
-function getFirstName() {
-  return document.getElementById("firstName").value;
+function getEmployeeManagerId() {
+	return document.getElementById("employeeManagerId").value;
 }
 
-function getLastName() {
-  return document.getElementById("lastName").value;
+function getEmployeeEmployeeId() {
+	return getEmployeeEmployeeIdElement().value;
+}
+function getEmployeeEmployeeIdElement() {
+	return document.getElementById("employeeEmployeeId");
 }
 
-function getPassword() {
-  return document.getElementById("password").value;
+function getSavedAlertModalElement() {
+	return document.getElementById("employeeSavedAlertModal");
 }
 
-function getConfirmPassword() {
-  return document.getElementById("confirmPassword").value;
+function getEmployeeFirstNameEditElement() {
+	return document.getElementById("employeeFirstName");
 }
 
-function getPosition() {
-  return document.getElementById("position").value;
+function getEmployeeLastNameEditElement() {
+	return document.getElementById("employeeLastName");
 }
+
+function getEmployeePasswordEditElement() {
+	return document.getElementById("employeePassword");
+}
+
+function getEmployeeConfirmPassword() {
+	return document.getElementById("employeeConfirmPassword").value;
+}
+
+function getEmployeeTypeSelectElement() {
+	return document.getElementById("employeeType");
+}
+//End getters and setters

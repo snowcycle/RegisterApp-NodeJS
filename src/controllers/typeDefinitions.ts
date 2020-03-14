@@ -1,4 +1,9 @@
 // Request object definitions
+export interface SignInRequest {
+	password: string;
+	employeeId: string;
+}
+
 export interface ProductSaveRequest {
 	id?: string;
 	count: number;
@@ -6,7 +11,6 @@ export interface ProductSaveRequest {
 }
 
 export interface EmployeeSaveRequest {
-	employeeId: number;
 	id?: string;
 	active: boolean;
 	lastName: string;
@@ -56,22 +60,28 @@ export interface PageResponse {
 	errorMessage?: string;
 }
 
-export interface ProductDetailPageResponse extends PageResponse {
-	product: Product;
-	isElevatedUser: boolean;
-}
-
-export interface ProductListingPageResponse extends PageResponse {
-	products: Product[];
-	isElevatedUser: boolean;
+export interface SignInPageResponse extends PageResponse {
+	employeeId: string;
 }
 
 export interface MainMenuPageResponse extends PageResponse {
 	isElevatedUser: boolean;
 }
 
+export interface ProductDetailPageResponse extends PageResponse {
+	product: Product;
+	isElevatedUser: boolean;
+}
+
 export interface EmployeeDetailPageResponse extends PageResponse {
-	
+	employee: Employee;
+	isInitialEmployee: boolean;
+	employeeTypes: EmployeeType[];
+}
+
+export interface ProductListingPageResponse extends PageResponse {
+	products: Product[];
+	isElevatedUser: boolean;
 }
 // End page response data
 
@@ -84,6 +94,10 @@ export interface ApiResponse {
 export interface ProductSaveResponse extends ApiResponse {
 	product: Product;
 }
+
+export interface EmployeeSaveResponse extends ApiResponse {
+	employee: Employee;
+}
 // End API response data
 // End response object definitions
 
@@ -91,12 +105,4 @@ export interface CommandResponse<T> {
 	data?: T;
 	status: number;
 	message?: string;
-}
-
-export interface SignInPageResponse extends PageResponse {
-	isElevatedUser: boolean;
-}
-export interface SignIn {
-	employeeId: string;
-	password: string;
 }
