@@ -45,4 +45,3 @@ app/**/*.js
 app/**/*.map
 test/**/*.js
 test/**/*.map
-.ionide/symbolCache.db
