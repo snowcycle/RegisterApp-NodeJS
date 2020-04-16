@@ -1,0 +1,133 @@
+body {
+    text-align: center;
+}
+
+.container form button
+{
+    margin: 0 auto;
+    display: block;
+    margin-top: 1em;
+} 
+
+.main-button
+{
+    width: 15em;
+    border: solid 1px black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.main-button:hover
+{
+    background-color: black;
+    color: white;
+}
+
+h1
+{
+    text-align: center;
+}
+
+.product   
+{
+    
+    width: 25%;
+    margin: 0 auto;
+    background-color: #dfdfdf;
+    margin-top: 1em;
+}
+.product:hover  
+{
+    cursor: pointer;
+    width: 25%;
+    margin: 0 auto;
+    background-color: lightgray;
+    margin-top: 1em;
+}
+#productDetail, #createEmployee{
+    display: inline-block;
+}
+
+#lookup > input[type=text]
+{
+    width: 80%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    float: left;
+}
+
+#lookup > button
+{
+    width: 20%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    float: left;
+}
+
+.foundItem
+{
+    margin-top: 1em;
+    border: solid 1px black;
+    width: 100%;
+    float: left;
+}
+.foundProd
+{
+    width: 85%;
+    float: left;
+    
+}
+#amount
+{
+    margin-top: .2em;
+    width: 2em;
+}
+
+#add
+{
+    margin-top: 0;
+    width: 15%;
+    float: left;
+    height: 3em;
+    
+}
+
+#cart
+{
+    width: 85%;
+    float: left;
+    text-align: right;
+    padding-right: 2em;
+}
+
+#cart-button
+{
+    width: 15%;
+    float: left;
+}
+
+.seperate
+{
+    margin-top: 1em;
+}
+
+.productLink
+{
+    color: black;
+}
+.productLink:hover
+{
+    text-decoration: none;
+    color: none;
+}

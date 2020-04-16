@@ -1,0 +1,21 @@
+<% include ./partials/header %>
+<body>
+  <div class="container">
+    <h1>Product Detail</h1>
+    <form action="/productDetail/<%=product.id%>?_method=PUT" id="productDetail" method="POST">
+      lookupCode: <input type="text" value="<%=product.lookupCode%>" name="product[lookupCode]" >
+      <br>
+      <br>
+      &emsp;&emsp;&ensp;Count: <input type="text" value="<%=product.count%>" name="product[count]" >
+      
+      <button class="main-button">Save</button>
+    </form>
+    <form action="/productDetail/<%=product.id%>?_method=DELETE" method="POST">
+      <button class="main-button">Delete</button>
+    </form>
+
+    
+
+  </div>
+</body>
+<% include ./partials/footer %>

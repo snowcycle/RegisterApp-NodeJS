@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Register</title>
+<!-- 		<link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap-table.min.css" >
+
+		<script src="scripts/bootstrap-table.min.js"></script> -->
+
+		
+		
+		<link rel="stylesheet" href="/stylesheets/bootstrap-table.min.css" >
+		<link rel="stylesheet" type="text/css" href="/stylesheets/bootstrap.min.css" >
+		<link rel="stylesheet" type="text/css" href="/stylesheets/issue.css">
+	
+		
+  
+</head>
+<body>
+					<% if(currentUser){ %>
+						<p>Name: <%= currentUser.firstName %>  <%= currentUser.lastName %>
+						<br>
+						Job: <%= currentUser.employeeType %>
+						<br>
+						Employee Id: <%= currentUser.username %></p> 
+					<% } %>
+				</div>
