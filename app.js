@@ -14,7 +14,8 @@ const expressSession = require("express-session");
 const uniqueValidator = require("mongoose-unique-validator");
 
 // APP CONFIG
-mongoose.connect("mongodb://localhost/register");
+mongoose.connect("mongodb://user:password1@ds247569.mlab.com:47569/heroku_0nckm1dx");
+//mongoose.connect("mongodb://localhost/register");
 mongoose.connection.once("open", function(){
     console.log("MONGODB connection made");
 
@@ -60,10 +61,15 @@ passport.deserializeUser(Employee.deserializeUser());
 //Employee Id
 var employeeID = 253;
 
+
 app.use(function (req, res, next) {
-    res.locals.cartProduct = "";
-    cartProduct.find({}, function(err, product){    
+    
+    cartProduct.find({}, function(err, product){   
+        if(product.length != 0) 
+        {
             res.locals.cartProduct =  product;
+        }
+        
     });
     res.locals.currentUser = req.user;
     res.locals.employeeId = employeeID;

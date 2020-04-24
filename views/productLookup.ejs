@@ -28,7 +28,7 @@
 
     <%} %>
     
-    <%if(cartProduct.length != 0){ %>
+    <%if(typeof cartProduct != "undefined"){ %>
       <form action="/viewCart">
         <div  class="seperate">
           <h5 class="seperate" id="cart">Items in cart: <%=cartProduct.length%></h5> 
