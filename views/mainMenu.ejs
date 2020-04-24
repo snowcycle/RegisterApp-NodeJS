@@ -1,0 +1,27 @@
+<% include ./partials/header %>
+<body>
+  <div class="container">
+    <h1>Main Menu</h1>
+
+    <form action="/productLookup">
+      <button class="main-button">Start Transaction</button>
+    </form>
+    <form action="/productListing">
+      <button class="main-button">View Products</button>
+    </form>
+    <%if(currentUser.employeeType != "cashier"){%>
+    <form action="/employeeDetail">
+      <button class="main-button">Create Employee</button>
+    </form>
+    <%}%>
+    <form action="/#">
+      <button class="main-button">Product Sales</button>
+    </form>
+    <form action="/#">
+      <button class="main-button">Cashier Sales</button>
+    </form>
+    
+
+  </div>
+</body>
+<% include ./partials/footer %>

@@ -1,0 +1,42 @@
+<% include ./partials/header %>
+
+<body>
+  <div class="container">
+    <div>
+      <h1>Lookup Product Page</h1>
+      <form action="/productLookup" method="POST" id="lookup">
+        <input  name="lookup" placeholder="Lookup Product by Lookup Code" type="text" required>
+        <button>Search</button>
+      </form>
+    </div>
+    
+
+    <%if(product[0]){ %>
+      <div >
+        <form action="/addCart" method="POST" class="foundItem">
+        <input type="text" name="cartProduct[lookupCode]" value="<%=product[0].lookupCode%>" hidden>
+
+        <h4 class="foundProd">
+          Lookup Code: <%=product[0].lookupCode%> |
+          Count: <%=product[0].count%> |
+          Amount to Add: <input id="amount" type="number" name="cartProduct[addAmount]" value="1">
+        </h4> 
+        <button id="add">Add to Cart</button>
+        </form>
+      </div>
+        
+
+    <%} %>
+    
+    <%if(typeof cartProduct != "undefined"){ %>
+      <form action="/viewCart">
+        <div  class="seperate">
+          <h5 class="seperate" id="cart">Items in cart: <%=cartProduct.length%></h5> 
+          <button id="cart-button">go to cart</button>
+        </div>
+      </form>
+    <%}%>
+
+  </div>
+  
+</body>

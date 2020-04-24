@@ -1,0 +1,22 @@
+<% include ./partials/header %>
+<body>
+  <h1>Cart</h1>
+  <%if (typeof cartProduct != "undefined"){ %>
+    <% cartProduct.forEach(product =>{ %>
+      <div class="product">
+        Lookup Code: <%=product.lookupCode%>
+        <br>
+        Amount to buy: <%=product.addAmount%>
+        <br>
+      </div>
+    <% }); %>
+  <%} %>
+
+  <form action="/clearCart" method="POST">
+  <button>Cancel Transaction</button>
+  </form>
+
+  <form action="/checkout" method="POST">
+    <button>Checkout</button>
+  </form>
+</body>
