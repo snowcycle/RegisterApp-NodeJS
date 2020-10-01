@@ -3,6 +3,7 @@ import { Resources } from "../resourceLookup";
 import * as Helper from "./helpers/routeControllerHelper";
 import { ViewNameLookup, QueryParameterLookup } from "./lookups/routingLookup";
 import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
+import * as EmployeeHelper from "./commands/employees/helpers/employeeHelper";
 import { PageResponse, CommandResponse, ActiveUser, MainMenuPageResponse } from "./typeDefinitions";
 
 export const start = async (req: Request, res: Response): Promise<void> => {
@@ -13,7 +14,7 @@ export const start = async (req: Request, res: Response): Promise<void> => {
 	return ValidateActiveUser.execute((<Express.Session>req.session).id)
 		.then((activeUserCommandResponse: CommandResponse<ActiveUser>): void => {
 			// TODO: Examine the ActiveUser classification if you want this information
-			const isElevatedUser: boolean = true;
+			const isElevatedUser: boolean = EmployeeHelper.isElevatedUser((<ActiveUser>activeUserCommandResponse.data).classification);
 
 			// This recommends to Firefox that it refresh the page every time
 			//  it is accessed
