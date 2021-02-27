@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	for (let i = 0; i < productListElements.length; i++) {
 		productListElements[i].addEventListener("click", productClick);
 	}
+    getSignOutActionElement().addEventListener("click", signOutActionClick);
 });
 
 function findClickedListItemElement(clickedTarget) {
@@ -31,4 +32,12 @@ function productClick(event) {
 	window.location.assign(
 		"/productDetail/"
 		+ listItem.querySelector("input[name='productId'][type='hidden']").value);
+}
+
+function signOutActionClick() {
+    window.location.assign("/");
+}
+
+function getSignOutActionElement() {
+    return document.getElementById("signOutImage");
 }

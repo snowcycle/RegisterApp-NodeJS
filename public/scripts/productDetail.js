@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		productLookupCodeElement.focus();
 		productLookupCodeElement.select();
 	}
+    getSignOutActionElement().addEventListener("click", signOutActionClick);
 });
 
 function productLookupCodeKeypress(event) {
@@ -59,6 +60,7 @@ function saveActionClick(event) {
 			if (isSuccessResponse(callbackResponse)) {
 				displayProductSavedAlertModal();
 			}
+			window.location.assign("/productListing");
 		});
 	} else {
 		ajaxPost(saveActionUrl, saveProductRequest, (callbackResponse) => {
@@ -76,6 +78,7 @@ function saveActionClick(event) {
 					setProductId(callbackResponse.data.product.id.trim());
 				}
 			}
+			window.location.assign("/productListing");
 		});
 	}
 };
@@ -137,14 +140,22 @@ function deleteActionClick(event) {
 				
 				window.location.replace(callbackResponse.data.redirectUrl);
 			} else {
-				window.location.replace("/");
+				window.location.replace("/ProductListing");
 			}
 		}
 	});
 };
 // End delete
 
+function signOutActionClick() {
+    window.location.assign("/");
+}
+
 // Getters and setters
+function getSignOutActionElement() {
+    return document.getElementById("signOutImage");
+}
+
 function getSaveActionElement() {
 	return document.getElementById("saveButton");
 }

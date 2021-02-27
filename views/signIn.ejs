@@ -1,0 +1,53 @@
+<html>
+
+<head>
+	<title>Register - Sign In</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+	<link rel="stylesheet" type="text/css" href="/styles/master.css">
+	<link rel="stylesheet" type="text/css" href="/styles/signIn.css">
+
+	<script type="text/javascript" src="/scripts/master.js" defer></script>
+	<script type="text/javascript" src="/scripts/signIn.js" defer></script>
+</head>
+
+<body>
+
+	<div class="header">
+		<h1 class="primary-message">Sign In</h1>
+	</div>
+
+	<div id="main" class="main">
+		<div id="error" <% if (!locals.errorMessage || (locals.errorMessage === "")) { %> class="hidden" <% } %>>
+			<h4 id="errorMessage" class="error-message">
+				<% if (locals.errorMessage && (locals.errorMessage !== "")) { %>
+					<%= locals.errorMessage %>
+				<% } %>
+			</h4>
+		</div>
+		<div class="signInWrapper">
+			<!--<form action="/" method="POST" onsubmit="return validateForm();" class="inputContent">-->
+				<table id="signIn">
+					<tbody>
+						<tr>
+							<td class="label">Employee ID:</td>
+							<td><input id="employeeID" type="text" class="update"></td>
+						</tr>
+						<tr>
+							<td class="label">Password:</td>
+							<td><input id="password" type="password" class="update"></td>
+						</tr>
+					</tbody>
+				</table>
+				<!--<tr><input id="submit" type="button" text="Sign In"></tr>-->
+			<!--</form>-->
+		</div>
+		<div>
+			</br>
+			<button id="submit" type="button" class="action">Sign In</button>
+		</div>
+	</div>
+
+</body>
+
+</html> 

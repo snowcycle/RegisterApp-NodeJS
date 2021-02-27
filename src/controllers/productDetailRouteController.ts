@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import * as Helper from "./helpers/routeControllerHelper";
 import { Resources, ResourceKey } from "../resourceLookup";
 import * as ProductQuery from "./commands/products/productQuery";
 import { ViewNameLookup, ParameterLookup, RouteLookup } from "./lookups/routingLookup";
@@ -6,6 +7,7 @@ import * as ProductCreateCommand from "./commands/products/productCreateCommand"
 import * as ProductDeleteCommand from "./commands/products/productDeleteCommand";
 import * as ProductUpdateCommand from "./commands/products/productUpdateCommand";
 import { CommandResponse, Product, ProductDetailPageResponse, ApiResponse, ProductSaveResponse, ProductSaveRequest } from "./typeDefinitions";
+import * as ValidateActiveUser from "./commands/activeUsers/validateActiveUserCommand";
 
 const processStartProductDetailError = (res: Response, error: any): void => {
 	let errorMessage: (string | undefined) = "";
