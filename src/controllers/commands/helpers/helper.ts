@@ -1,6 +1,10 @@
+import { isNumber } from "util";
+
 export const isBlankString = (toCheck?: string): boolean => {
 	return ((toCheck == null) || (toCheck.trim() === ""));
 };
+
+
 
 export const formatDate = (dateToFormat: Date): string => {
 	let hours: number = (dateToFormat.getHours() % 12);

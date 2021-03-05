@@ -97,7 +97,7 @@ export const queryByEmployeeId = async (
 
 export const queryActive = async (): Promise<EmployeeModel[]> => {
 	return EmployeeModel.findAll(<Sequelize.FindOptions>{
-		order: [ [EmployeeFieldName.CreatedOn, "ASC"] ],
+		order: [[EmployeeFieldName.CreatedOn, "ASC"]],
 		where: <Sequelize.WhereAttributeHash>{ active: true }
 	});
 };
@@ -107,3 +107,12 @@ export const queryActiveExists = async (): Promise<EmployeeModel | null> => {
 		where: <Sequelize.WhereAttributeHash>{ active: true }
 	});
 };
+
+
+export const employeeSignIn = async (): Promise<EmployeeModel | null> => {
+	return EmployeeModel.findOne(<Sequelize.FindOptions>{
+		where: <Sequelize.WhereAttributeHash>{ active: true }
+	});
+};
+
+

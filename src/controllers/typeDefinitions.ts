@@ -92,3 +92,8 @@ export interface CommandResponse<T> {
 	status: number;
 	message?: string;
 }
+
+export interface SignInRequest {
+	employeeId: string;
+	password: string;
+}
